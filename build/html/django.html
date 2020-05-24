@@ -1,0 +1,1283 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>form 表单注册验证 &mdash; DockerDoc 1.0.1 文档</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="prev" title="Welcome to DockerDoc’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> DockerDoc
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">form 表单注册验证</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#mysql">远程连接 MySQL 数据库失败</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#django-settings">Django 开发之拆分 settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#aes">AES 加密</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#django">Django 查询：按年/月/天查询某个字段的数目</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#django-cbv">Django CBV 装饰器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#modelform">ModelForm 实现增删改查</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id1">Django 获取项目中所有路由</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id2">Django 按时间过滤搜索</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#id3">优雅的 Django 过滤搜索</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#django-admin2fa">django-admin实现2FA双因子认证的方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#json-in-order-to-allow-non-dict-objects-to-be-serialized-set-the-safe-parameter-t">使用 Json 转换时出现<code class="docutils literal notranslate"><span class="pre">In</span> <span class="pre">order</span> <span class="pre">to</span> <span class="pre">allow</span> <span class="pre">non-dict</span> <span class="pre">objects</span> <span class="pre">to</span> <span class="pre">be</span> <span class="pre">serialized</span> <span class="pre">set</span> <span class="pre">the</span> <span class="pre">safe</span> <span class="pre">parameter</span> <span class="pre">t</span></code></a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DockerDoc</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>form 表单注册验证</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/django.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="form">
+<h1>form 表单注册验证<a class="headerlink" href="#form" title="永久链接至标题">¶</a></h1>
+<p>1、<code class="docutils literal notranslate"><span class="pre">users_view.py</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">auth</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth</span> <span class="kn">import</span> <span class="n">logout</span><span class="p">,</span> <span class="n">login</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">JsonResponse</span>
+<span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span><span class="p">,</span> <span class="n">redirect</span>
+<span class="kn">from</span> <span class="nn">django.urls</span> <span class="kn">import</span> <span class="n">reverse</span>
+<span class="kn">from</span> <span class="nn">django.views</span> <span class="kn">import</span> <span class="n">View</span>
+
+
+<span class="kn">from</span> <span class="nn">.forms</span> <span class="kn">import</span> <span class="n">RegisterForm</span>
+
+
+<span class="k">class</span> <span class="nc">RegisterView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;注册视图&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;users/register.html&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">register_form</span> <span class="o">=</span> <span class="n">RegisterForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">register_form</span><span class="o">=</span><span class="n">register_form</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">register_form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">register_form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;users/register.html&#39;</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>2、<code class="docutils literal notranslate"><span class="pre">forms.py</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">django</span> <span class="kn">import</span> <span class="n">forms</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.hashers</span> <span class="kn">import</span> <span class="n">make_password</span>
+<span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="kn">import</span> <span class="n">NON_FIELD_ERRORS</span><span class="p">,</span> <span class="n">ValidationError</span>
+
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">UserProfile</span>
+
+
+<span class="k">class</span> <span class="nc">RegisterForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;注册&quot;&quot;&quot;</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">min_length</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+        <span class="n">max_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">error_messages</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="s2">&quot;用户名不能为空&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;min_length&quot;</span><span class="p">:</span> <span class="s2">&quot;用户名长度最少4位数&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;max_length&quot;</span><span class="p">:</span> <span class="s2">&quot;用户名长度最长20位数&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="n">password</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">min_length</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+        <span class="n">max_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">error_messages</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="s2">&quot;密码不能为空&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;min_length&quot;</span><span class="p">:</span> <span class="s2">&quot;密码长度最少6位数&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;max_length&quot;</span><span class="p">:</span> <span class="s2">&quot;密码长度最长20位数&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="n">confirm_password</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">min_length</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+        <span class="n">max_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">error_messages</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="s2">&quot;密码不能为空&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;min_length&quot;</span><span class="p">:</span> <span class="s2">&quot;密码长度最少6位数&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;max_length&quot;</span><span class="p">:</span> <span class="s2">&quot;密码长度最长20位数&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;这里面的错误会在 non_field_errors 中显示&quot;&quot;&quot;</span>
+        <span class="n">cleaned_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleaned_data</span>
+        <span class="n">username</span> <span class="o">=</span> <span class="n">cleaned_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">)</span>
+        <span class="n">password</span> <span class="o">=</span> <span class="n">cleaned_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;password&#39;</span><span class="p">)</span>
+        <span class="n">confirm_password</span> <span class="o">=</span> <span class="n">cleaned_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;confirm_password&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">UserProfile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s1">&#39;用户名：</span><span class="si">{}</span><span class="s1">已存在&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">username</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">password</span> <span class="o">!=</span> <span class="n">confirm_password</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s2">&quot;两次密码输入不一致&quot;</span><span class="p">)</span>
+
+        <span class="c1"># 密码加密</span>
+        <span class="n">cleaned_data</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_password</span><span class="p">(</span><span class="n">confirm_password</span><span class="p">)</span>
+
+        <span class="c1"># REGEX_MOBILE = &quot;^1[3578]\d{9}$|^147\d{8}$|^176\d{8}$&quot;</span>
+        <span class="c1"># if not re.match(REGEX_MOBILE, username):</span>
+        <span class="c1">#     raise ValidationError(&quot;手机号码格式非法&quot;)</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">UserProfile</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">,</span> <span class="s1">&#39;confirm_password&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>3、<code class="docutils literal notranslate"><span class="pre">register.html</span></code></p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>&lt;div class=&quot;register-box-body&quot;&gt;
+    &lt;p class=&quot;login-box-msg&quot;&gt;Register a new membership&lt;/p&gt;
+
+    &lt;form action=&quot;{% url &#39;register&#39; %}&quot; method=&quot;post&quot;&gt;
+        {% csrf_token %}
+
+        &lt;!-- 非字段错误提示 --&gt;
+        {% if register_form.non_field_errors %}
+            &lt;div class=&quot;alert alert-danger&quot; role=&quot;alert&quot;&gt;
+                {% for error in register_form.non_field_errors %}
+                    &lt;p{% if forloop.last %} class=&quot;mb-0&quot;{% endif %}&gt;{{ error }}&lt;/p&gt;
+                {% endfor %}
+            &lt;/div&gt;
+        {% endif %}
+
+        &lt;div class=&quot;form-group has-feedback&quot;&gt;
+            &lt;input type=&quot;text&quot; name=&quot;username&quot;
+                    class=&quot;form-control {% if register_form.errors.username %}has-error{% endif %}&quot;
+                    placeholder=&quot;用户名&quot;&gt;
+            &lt;span class=&quot;glyphicon glyphicon-user form-control-feedback&quot;&gt;&lt;/span&gt;
+            &lt;span class=&quot;form-text text-muted&quot;&gt;{{ register_form.errors.username.0 }}&lt;/span&gt;
+
+        &lt;/div&gt;
+        &lt;div class=&quot;form-group has-feedback&quot;&gt;
+            &lt;input type=&quot;password&quot; name=&quot;password&quot;
+                    class=&quot;form-control {% if register_form.errors.password %}has-error{% endif %}&quot;
+                    placeholder=&quot;密码&quot;&gt;
+            &lt;span class=&quot;glyphicon glyphicon-lock form-control-feedback&quot;&gt;&lt;/span&gt;
+            &lt;span class=&quot;form-text text-muted&quot;&gt;{{ register_form.errors.password.0 }}&lt;/span&gt;
+
+        &lt;/div&gt;
+        &lt;div class=&quot;form-group has-feedback&quot;&gt;
+            &lt;input type=&quot;password&quot; name=&quot;confirm_password&quot;
+                    class=&quot;form-control {% if register_form.errors.confirm_password %}has-error{% endif %}&quot;
+                    placeholder=&quot;确认密码&quot;&gt;
+            &lt;span class=&quot;glyphicon glyphicon-log-in form-control-feedback&quot;&gt;&lt;/span&gt;
+            &lt;span class=&quot;form-text text-muted&quot;&gt;{{ register_form.errors.confirm_password.0 }}&lt;/span&gt;
+
+        &lt;/div&gt;
+
+        &lt;div class=&quot;row&quot;&gt;
+            &lt;div class=&quot;col-xs-8&quot;&gt;
+
+            &lt;/div&gt;
+            &lt;!-- /.col --&gt;
+            &lt;div class=&quot;col-xs-4&quot;&gt;
+                &lt;button type=&quot;submit&quot; class=&quot;btn btn-primary btn-block btn-flat&quot;&gt;注册&lt;/button&gt;
+            &lt;/div&gt;
+            &lt;!-- /.col --&gt;
+        &lt;/div&gt;
+    &lt;/form&gt;
+
+
+    &lt;a href=&quot;login.html&quot; class=&quot;text-center&quot;&gt;我已有账户，登陆&lt;/a&gt;
+&lt;/div&gt;
+</pre></div>
+</div>
+<p><strong>创建用户的两种方式</strong></p>
+<p>1、未继承 <code class="docutils literal notranslate"><span class="pre">ModelForm</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">UserProfile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="o">**</span><span class="n">register_form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>2、继承 <code class="docutils literal notranslate"><span class="pre">ModelForm</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>register_form.save()
+
+**注意**\ ： - 自定义 form 类，必须继承 ModelForm 才有 save() 方法！
+- ModelForm 必须实现 ``Class Meta``\ ，否则报错 - ``clean()``
+中验证的非字段错误，会加载到 ``non_field_errors`` 中，在前端可以使用
+``register_form.non_field_errors`` 显示
+</pre></div>
+</div>
+</div>
+<div class="section" id="mysql">
+<h1>远程连接 MySQL 数据库失败<a class="headerlink" href="#mysql" title="永久链接至标题">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">Ubuntu</span> <span class="pre">18.04</span></code> <code class="docutils literal notranslate"><span class="pre">mysql</span></code>
+配置文件路径：<code class="docutils literal notranslate"><span class="pre">/etc/mysql/mysql.conf.d/mysqld.cnf</span></code></p>
+<p>1、<code class="docutils literal notranslate"><span class="pre">ss</span> <span class="pre">-tlnp</span></code> 命令查看网络接口开启状态，若没有开启 3306
+端口，或绑定了 <code class="docutils literal notranslate"><span class="pre">127.0.0.1:3306</span></code>，那么表示只允许本地访问。</p>
+<p>2、修改配置文件，将：<code class="docutils literal notranslate"><span class="pre">bind-address：127.0.0.1</span></code> 注释掉。</p>
+<p>3、重启 <code class="docutils literal notranslate"><span class="pre">mysql</span></code> 服务：</p>
+<div class="highlight-mysql notranslate"><div class="highlight"><pre><span></span><span class="n">service</span> <span class="n">mysql</span> <span class="n">restart</span>   <span class="c1"># 重启</span>
+<span class="n">service</span> <span class="n">mysql</span> <span class="n">status</span>    <span class="c1"># 查看状态</span>
+<span class="n">service</span> <span class="n">mysql</span> <span class="n">start</span> <span class="c1"># 开启</span>
+<span class="n">service</span> <span class="n">mysql</span> <span class="n">stop</span>  <span class="c1"># 停止</span>
+</pre></div>
+</div>
+<p>参考文章：<code class="docutils literal notranslate"><span class="pre">https://blog.csdn.net/crossangles_2017/article/details/79529064</span></code></p>
+</div>
+<div class="section" id="django-settings">
+<h1>Django 开发之拆分 settings<a class="headerlink" href="#django-settings" title="永久链接至标题">¶</a></h1>
+<p><strong>为什么要拆分 settings</strong></p>
+<p>线上生产环境和本地环境一些配置是不一样的，比如数据库的配置（本地是
+<code class="docutils literal notranslate"><span class="pre">sqlite3</span></code>，而线上是 <code class="docutils literal notranslate"><span class="pre">MySQL</span></code> 或其他数据库；本地要加载
+<code class="docutils literal notranslate"><span class="pre">django-debug-toolbar</span></code>，而线上不要。</p>
+<p>为了不用每次部署的时候，都大量改动
+<code class="docutils literal notranslate"><span class="pre">settings</span></code>，拆分无疑是更好的选择。</p>
+<p><strong>步骤</strong></p>
+<ul class="simple">
+<li><p>新建 <code class="docutils literal notranslate"><span class="pre">settings</span></code> 包文件</p></li>
+<li><p>新建：<code class="docutils literal notranslate"><span class="pre">base.py、develop.py、product.py</span></code>，分别对应基础配置文件（即公共配置）、开发和线上环境</p></li>
+<li><p>删除原有 <code class="docutils literal notranslate"><span class="pre">settings.py</span></code></p></li>
+<li><p>更改：<code class="docutils literal notranslate"><span class="pre">manage.py</span></code> 和 <code class="docutils literal notranslate"><span class="pre">wsgi.py</span></code></p></li>
+<li><p>更改 <code class="docutils literal notranslate"><span class="pre">pycharm</span> <span class="pre">Environment</span> <span class="pre">variables</span></code>：如果是用 <code class="docutils literal notranslate"><span class="pre">pycharm</span></code>
+开发的话</p></li>
+</ul>
+<p>下面分别是几个 <code class="docutils literal notranslate"><span class="pre">py</span></code> 文件参考：</p>
+<p>1、<code class="docutils literal notranslate"><span class="pre">base.py</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>import os
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), &quot;..&quot;)
+
+
+INSTALLED_APPS = [
+    &#39;django.contrib.admin&#39;,
+    &#39;django.contrib.auth&#39;,
+    &#39;django.contrib.contenttypes&#39;,
+    &#39;django.contrib.sessions&#39;,
+    &#39;django.contrib.messages&#39;,
+    &#39;django.contrib.staticfiles&#39;,
+
+    &#39;system&#39;,
+]
+
+MIDDLEWARE = [
+    &#39;django.middleware.security.SecurityMiddleware&#39;,
+    &#39;django.contrib.sessions.middleware.SessionMiddleware&#39;,
+    &#39;django.middleware.common.CommonMiddleware&#39;,
+    &#39;django.middleware.csrf.CsrfViewMiddleware&#39;,
+    &#39;django.contrib.auth.middleware.AuthenticationMiddleware&#39;,
+    &#39;django.contrib.messages.middleware.MessageMiddleware&#39;,
+    &#39;django.middleware.clickjacking.XFrameOptionsMiddleware&#39;,
+]
+
+ROOT_URLCONF = &#39;Box.urls&#39;
+
+TEMPLATES = [
+    {
+        &#39;BACKEND&#39;: &#39;django.template.backends.django.DjangoTemplates&#39;,
+        &#39;DIRS&#39;: [os.path.join(BASE_DIR, &#39;templates&#39;)]
+        ,
+        &#39;APP_DIRS&#39;: True,
+        &#39;OPTIONS&#39;: {
+            &#39;context_processors&#39;: [
+                &#39;django.template.context_processors.debug&#39;,
+                &#39;django.template.context_processors.request&#39;,
+                &#39;django.contrib.auth.context_processors.auth&#39;,
+                &#39;django.contrib.messages.context_processors.messages&#39;,
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = &#39;Box.wsgi.application&#39;
+
+# Database
+# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
+
+DATABASES = {
+    &#39;default&#39;: {
+        &#39;ENGINE&#39;: &#39;django.db.backends.sqlite3&#39;,
+        &#39;NAME&#39;: os.path.join(BASE_DIR, &#39;db.sqlite3&#39;),
+    }
+}
+
+# Password validation
+# https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        &#39;NAME&#39;: &#39;django.contrib.auth.password_validation.UserAttributeSimilarityValidator&#39;,
+    },
+    {
+        &#39;NAME&#39;: &#39;django.contrib.auth.password_validation.MinimumLengthValidator&#39;,
+    },
+    {
+        &#39;NAME&#39;: &#39;django.contrib.auth.password_validation.CommonPasswordValidator&#39;,
+    },
+    {
+        &#39;NAME&#39;: &#39;django.contrib.auth.password_validation.NumericPasswordValidator&#39;,
+    },
+]
+
+# Internationalization
+# https://docs.djangoproject.com/en/2.1/topics/i18n/
+
+LANGUAGE_CODE = &#39;zh-hans&#39;
+
+TIME_ZONE = &#39;Asia/Shanghai&#39;
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = False
+
+STATIC_URL = &#39;/static/&#39;
+
+STATICFILES_DIRS = [os.path.join(BASE_DIR, &#39;static&#39;)]
+
+MEDIA_URL = &#39;/media/&#39;
+MEDIA_ROOT = os.path.join(BASE_DIR, &#39;media&#39;)
+
+LOGIN_URL = &#39;/login/&#39;
+
+# 找到 apps
+import sys
+
+sys.path.insert(0, os.path.join(BASE_DIR, &#39;apps&#39;))
+AUTH_USER_MODEL = &#39;system.UserProfile&#39;
+
+# 发送邮件设置
+EMAIL_BACKEND = &#39;django.core.mail.backends.smtp.EmailBackend&#39;
+# SMTP地址
+EMAIL_HOST = &#39;smtp.exmail.qq.com&#39;
+# SMTP端口
+EMAIL_PORT = 25
+# 自己的邮箱
+EMAIL_HOST_USER = &#39;xxy@rusell.top&#39;
+# 自己的邮箱授权码，非密码
+from utils.common.encryption import EnCryPt
+EMAIL_HOST_PASSWORD = EnCryPt().debase64(b&#39;Rm9BZUZ4TGNNd3liaW5YTA==&#39;)
+
+SUBJECT = &quot;xx 后台管理系统密码重置&quot;
+MESSAGE = &quot;您好，您的验证码为：{}，有效期 1 分钟。&quot;
+
+注意：因为原有 ``setting.py`` 位置和 ``base.py``
+不一致，因此需要修改 ``BASE_DIR`` 的路径才能找到 ``static`` 和
+``template``\ 。
+</pre></div>
+</div>
+<p>2、<code class="docutils literal notranslate"><span class="pre">develop.py</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="o">*</span>  <span class="c1"># NOQA      # 告诉 pe8 不用检测</span>
+
+<span class="n">SECRET_KEY</span> <span class="o">=</span> <span class="s1">&#39;development-secret-key&#39;</span>
+
+<span class="n">DEBUG</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="n">ALLOWED_HOSTS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;*&#39;</span><span class="p">]</span>
+
+<span class="n">DATABASES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;ENGINE&#39;</span><span class="p">:</span> <span class="s1">&#39;django.db.backends.sqlite3&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;NAME&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_DIR</span><span class="p">,</span> <span class="s1">&#39;db.sqlite3&#39;</span><span class="p">),</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>3、<code class="docutils literal notranslate"><span class="pre">product.py</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>from .base import *  # NOQA
+
+SECRET_KEY = os.environ[&#39;DJANGO_SECRET_KEY&#39;]
+
+DEBUG = False
+
+ALLOWED_HOSTS = [&#39;192.168.188.145&#39;]
+
+DATABASES = {
+    &#39;default&#39;: {
+        &#39;ENGINE&#39;: &#39;django.db.backends.mysql&#39;,
+        &#39;NAME&#39;: &#39;vpn&#39;,
+        &#39;USER&#39;: &#39;root&#39;,
+        &#39;PASSWORD&#39;: &#39;root&#39;,
+        &#39;HOST&#39;: &#39;192.168.188.145&#39;,
+        &#39;PORT&#39;: 3306
+    }
+}
+
+
+# 静态文件收集路径
+STATIC_ROOT = os.path.join(BASE_DIR, &#39;static_all&#39;)
+
+注意：线上部署时 DEBUG 为 False，Django 采用 STATIC\_ROOT
+找到静态文件
+</pre></div>
+</div>
+<p>4、修改 <code class="docutils literal notranslate"><span class="pre">manage.py</span></code> 和 <code class="docutils literal notranslate"><span class="pre">wsgi.py</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># 修改</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;DJANGO_SETTINGS_MODULE&quot;</span><span class="p">,</span> <span class="s2">&quot;Box.settings.develop&quot;</span><span class="p">)</span>
+    <span class="c1"># os.environ.setdefault(&quot;DJANGO_SETTINGS_MODULE&quot;, &quot;Box.settings.product&quot;)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">django.core.management</span> <span class="kn">import</span> <span class="n">execute_from_command_line</span>
+    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+            <span class="s2">&quot;Couldn&#39;t import Django. Are you sure it&#39;s installed and &quot;</span>
+            <span class="s2">&quot;available on your PYTHONPATH environment variable? Did you &quot;</span>
+            <span class="s2">&quot;forget to activate a virtual environment?&quot;</span>
+        <span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
+    <span class="n">execute_from_command_line</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">wsgi.py</span></code> 修改方法一致。</p>
+<p>5、若使用 <code class="docutils literal notranslate"><span class="pre">pycharm</span></code> 开发，还需要修改：<code class="docutils literal notranslate"><span class="pre">Environment</span> <span class="pre">variables</span></code>
+变量的值。</p>
+<p>点击 <code class="docutils literal notranslate"><span class="pre">Edit</span> <span class="pre">Configurations</span></code>，点击之后修改里面的
+<code class="docutils literal notranslate"><span class="pre">Environment</span> <span class="pre">variables</span></code> 为：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">PYTHONUNBUFFERED</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">DJANGO_SETTINGS_MODULE</span><span class="o">=</span><span class="n">Project</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">develop</span>
+</pre></div>
+</div>
+<p>使用时，只需修改：<code class="docutils literal notranslate"><span class="pre">manage.py</span></code> 和 <code class="docutils literal notranslate"><span class="pre">wsgi.py</span></code>
+的值即可区分开发与生产环境，非常方便。</p>
+<p>参考文章：<code class="docutils literal notranslate"><span class="pre">https://zhuanlan.zhihu.com/p/67984033</span></code></p>
+</div>
+<div class="section" id="aes">
+<h1>AES 加密<a class="headerlink" href="#aes" title="永久链接至标题">¶</a></h1>
+<p>安装：<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pycryptodome</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">OptCrypt</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;配置文件加密解密类&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">add_to_32</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; str不是32的倍数那就补足为16的倍数&quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">%</span> <span class="mi">32</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>  <span class="c1"># 返回bytes</span>
+
+    <span class="k">def</span> <span class="nf">aes_encrypt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;加密方法&quot;&quot;&quot;</span>
+        <span class="c1"># 秘钥</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;lymhqnoetl15321&#39;</span>
+        <span class="c1"># 待加密文本</span>
+        <span class="c1"># 初始化加密器</span>
+        <span class="n">aes</span> <span class="o">=</span> <span class="n">AES</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_to_32</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">AES</span><span class="o">.</span><span class="n">MODE_ECB</span><span class="p">)</span>
+        <span class="c1"># 先进行aes加密</span>
+        <span class="n">encrypt_aes</span> <span class="o">=</span> <span class="n">aes</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_to_32</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+        <span class="c1"># 用base64转成字符串形式</span>
+        <span class="n">encrypted_text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">encodebytes</span><span class="p">(</span><span class="n">encrypt_aes</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c1"># 执行加密并转码返回bytes</span>
+
+        <span class="k">return</span> <span class="n">encrypted_text</span>
+
+    <span class="k">def</span> <span class="nf">aes_decrypt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;解密方法&quot;&quot;&quot;</span>
+        <span class="c1"># 秘钥</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;lymhqnoetl15321&#39;</span>
+        <span class="c1"># 密文</span>
+        <span class="c1"># 初始化加密器</span>
+        <span class="n">aes</span> <span class="o">=</span> <span class="n">AES</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_to_32</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">AES</span><span class="o">.</span><span class="n">MODE_ECB</span><span class="p">)</span>
+        <span class="c1"># 优先逆向解密base64成bytes</span>
+        <span class="n">base64_decrypted</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">decodebytes</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+        <span class="c1"># 执行解密密并转码返回str</span>
+        <span class="n">decrypted_text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">aes</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">base64_decrypted</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">decrypted_text</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="django">
+<h1>Django 查询：按年/月/天查询某个字段的数目<a class="headerlink" href="#django" title="永久链接至标题">¶</a></h1>
+<p><strong>需求</strong></p>
+<p>查询过去一年到现在每天新增（注册）的用户数目</p>
+<p>1、<code class="docutils literal notranslate"><span class="pre">models.py</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">UserInfo</span><span class="p">(</span><span class="n">AbstractUser</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;用户信息&quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">verbose_name</span><span class="o">=</span><span class="s2">&quot;姓名&quot;</span><span class="p">)</span>
+    <span class="n">gender_choices</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;male&quot;</span><span class="p">,</span> <span class="s2">&quot;男&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;female&quot;</span><span class="p">,</span> <span class="s2">&quot;女&quot;</span><span class="p">))</span>
+    <span class="n">birthday</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose_name</span><span class="o">=</span><span class="s2">&quot;出生日期&quot;</span><span class="p">)</span>
+    <span class="n">gender</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">gender_choices</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;female&quot;</span><span class="p">,</span> <span class="n">verbose_name</span><span class="o">=</span><span class="s2">&quot;性别&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>2、<code class="docutils literal notranslate"><span class="pre">orm</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.db.models.functions</span> <span class="kn">import</span> <span class="n">ExtractYear</span><span class="p">,</span> <span class="n">ExtractMonth</span><span class="p">,</span> <span class="n">ExtractDay</span>
+
+<span class="c1"># date_joined 为内置 User 模型的字段，即加入日期</span>
+<span class="n">one_year_ago</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">365</span><span class="p">)</span>  <span class="c1"># 一年前</span>
+
+<span class="n">user_list</span> <span class="o">=</span> <span class="n">UserProfile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">date_joined__gte</span><span class="o">=</span><span class="n">one_year_ago</span><span class="p">)</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
+            <span class="n">year</span><span class="o">=</span><span class="n">ExtractYear</span><span class="p">(</span><span class="s1">&#39;date_joined&#39;</span><span class="p">),</span> <span class="n">month</span><span class="o">=</span><span class="n">ExtractMonth</span><span class="p">(</span><span class="s1">&#39;date_joined&#39;</span><span class="p">),</span> <span class="n">day</span><span class="o">=</span><span class="n">ExtractDay</span><span class="p">(</span><span class="s1">&#39;date_joined&#39;</span><span class="p">)</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">Count</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>运行结果：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">QuerySet</span> <span class="p">[{</span><span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="mi">2020</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="mi">2020</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="mi">2020</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="mi">17</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="mi">2020</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="mi">2020</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}]</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>参考文章：<code class="docutils literal notranslate"><span class="pre">https://cloud.tencent.com/developer/ask/131410</span></code></p>
+</div>
+<div class="section" id="django-cbv">
+<h1>Django CBV 装饰器<a class="headerlink" href="#django-cbv" title="永久链接至标题">¶</a></h1>
+<p>1、<code class="docutils literal notranslate"><span class="pre">views.py</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@method_decorator</span><span class="p">(</span><span class="n">login_required</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;get&#39;</span><span class="p">)</span>
+<span class="nd">@method_decorator</span><span class="p">(</span><span class="n">check_role</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;get&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">RouteView</span><span class="p">(</span><span class="n">TemplateView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;路由器列表视图&quot;&quot;&quot;</span>
+
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;system/route.html&#39;</span>
+</pre></div>
+</div>
+<p>2、<code class="docutils literal notranslate"><span class="pre">custom.py</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+
+<span class="k">def</span> <span class="nf">check_role</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    检查当前登陆用户是否是 &quot;后台管理&quot; 角色，若是，则跳转到首页，否则跳转到路由器管理页面</span>
+<span class="sd">    :param func:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">roles</span><span class="o">.</span><span class="n">all</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">settings</span><span class="o">.</span><span class="n">USER_ROLE_NAME</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>    <span class="c1"># 执行 RouteView() 的 get() 方法</span>
+
+    <span class="k">return</span> <span class="n">inner</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="modelform">
+<h1>ModelForm 实现增删改查<a class="headerlink" href="#modelform" title="永久链接至标题">¶</a></h1>
+<p>1、<code class="docutils literal notranslate"><span class="pre">models.py</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+
+
+<span class="k">class</span> <span class="nc">Menu</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    菜单表</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose_name</span><span class="o">=</span><span class="s1">&#39;菜单名称&#39;</span><span class="p">)</span>
+    <span class="n">icon</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">verbose_name</span><span class="o">=</span><span class="s1">&#39;菜单图标&#39;</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span>
+
+
+<span class="k">class</span> <span class="nc">Permission</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    权限表</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">verbose_name</span><span class="o">=</span><span class="s1">&#39;标题&#39;</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">verbose_name</span><span class="o">=</span><span class="s1">&#39;含正则的URL&#39;</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">verbose_name</span><span class="o">=</span><span class="s1">&#39;URL别名&#39;</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">verbose_name</span><span class="o">=</span><span class="s1">&#39;父权限&#39;</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="s1">&#39;Permission&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
+    <span class="n">menu</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">verbose_name</span><span class="o">=</span><span class="s1">&#39;菜单&#39;</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="s1">&#39;Menu&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span>
+
+
+<span class="k">class</span> <span class="nc">Role</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    角色</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">verbose_name</span><span class="o">=</span><span class="s1">&#39;角色名称&#39;</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+    <span class="n">permissions</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ManyToManyField</span><span class="p">(</span><span class="n">verbose_name</span><span class="o">=</span><span class="s1">&#39;拥有的所有权限&#39;</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="s1">&#39;Permission&#39;</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span>
+
+
+<span class="k">class</span> <span class="nc">UserInfo</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    用户表</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">verbose_name</span><span class="o">=</span><span class="s1">&#39;用户名&#39;</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">verbose_name</span><span class="o">=</span><span class="s1">&#39;密码&#39;</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">verbose_name</span><span class="o">=</span><span class="s1">&#39;邮箱&#39;</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+    <span class="n">roles</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ManyToManyField</span><span class="p">(</span><span class="n">verbose_name</span><span class="o">=</span><span class="s1">&#39;拥有的所有角色&#39;</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="s1">&#39;Role&#39;</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">：</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">roles</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>2、<code class="docutils literal notranslate"><span class="pre">urls.py</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.urls</span> <span class="kn">import</span> <span class="n">path</span><span class="p">,</span> <span class="n">re_path</span>
+
+<span class="kn">from</span> <span class="nn">rbac.views</span> <span class="kn">import</span> <span class="n">views_role</span>
+
+<span class="n">app_name</span> <span class="o">=</span> <span class="s1">&#39;rbac&#39;</span>
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">re_path</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^role/list/$&#39;</span><span class="p">,</span> <span class="n">views_role</span><span class="o">.</span><span class="n">role_list</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;role_list&#39;</span><span class="p">),</span>
+    <span class="n">re_path</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^role/add/$&#39;</span><span class="p">,</span> <span class="n">views_role</span><span class="o">.</span><span class="n">role_add</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;role_add&#39;</span><span class="p">),</span>
+    <span class="n">re_path</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^role/edit/(?P&lt;pk&gt;\d+)/$&#39;</span><span class="p">,</span> <span class="n">views_role</span><span class="o">.</span><span class="n">role_edit</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;role_edit&#39;</span><span class="p">),</span>
+    <span class="n">re_path</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^role/del/(?P&lt;pk&gt;\d+)/$&#39;</span><span class="p">,</span> <span class="n">views_role</span><span class="o">.</span><span class="n">role_del</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;role_del&#39;</span><span class="p">),</span>
+
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>3、<code class="docutils literal notranslate"><span class="pre">rbac/views_role.py</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
+<span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span><span class="p">,</span> <span class="n">redirect</span>
+<span class="kn">from</span> <span class="nn">django.urls</span> <span class="kn">import</span> <span class="n">reverse</span>
+
+<span class="kn">from</span> <span class="nn">rbac</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">rbac.forms.role</span> <span class="kn">import</span> <span class="n">RoleForm</span>
+
+
+<span class="k">def</span> <span class="nf">role_list</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;角色列表&quot;&quot;&quot;</span>
+
+    <span class="n">role_list</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Role</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;rbac/role.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;role_list&#39;</span><span class="p">:</span> <span class="n">role_list</span><span class="p">})</span>
+
+
+<span class="k">def</span> <span class="nf">role_add</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;添加角色&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
+        <span class="n">forms</span> <span class="o">=</span> <span class="n">RoleForm</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;rbac/change.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;forms&#39;</span><span class="p">:</span> <span class="n">forms</span><span class="p">})</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">role_form</span> <span class="o">=</span> <span class="n">RoleForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">role_form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">role_form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;rbac:role_list&#39;</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">role_edit</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;编辑角色&quot;&quot;&quot;</span>
+    <span class="n">role</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Role</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">pk</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">role</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="s1">&#39;角色不存在&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
+        <span class="n">forms</span> <span class="o">=</span> <span class="n">RoleForm</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="n">role</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;rbac/change.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;forms&#39;</span><span class="p">:</span> <span class="n">forms</span><span class="p">})</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">role_form</span> <span class="o">=</span> <span class="n">RoleForm</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="n">role</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">role_form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">role_form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;rbac:role_list&#39;</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">role_del</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;删除角色&quot;&quot;&quot;</span>
+    <span class="n">origin_url</span> <span class="o">=</span> <span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;rbac:role_list&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GET&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;rbac/delete.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;cancel&#39;</span><span class="p">:</span> <span class="n">origin_url</span><span class="p">})</span>
+
+    <span class="n">models</span><span class="o">.</span><span class="n">Role</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">pk</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;rbac:role_list&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>添加、编辑角色使用的是同一 <code class="docutils literal notranslate"><span class="pre">form</span></code>
+表单：<code class="docutils literal notranslate"><span class="pre">RoleForm</span></code>，<strong>需要注意的是</strong>：</p>
+<ul class="simple">
+<li><p>添加角色，渲染的是空白表单</p></li>
+<li><p>编辑角色，渲染的是有初始数据的表单，可给 <code class="docutils literal notranslate"><span class="pre">RoleForm</span></code>
+传实例对象：<code class="docutils literal notranslate"><span class="pre">RoleForm(instance=role)</span></code></p></li>
+</ul>
+<p>保存数据，使用 <code class="docutils literal notranslate"><span class="pre">save()</span></code> 方法保存即可。</p>
+<p>4、<code class="docutils literal notranslate"><span class="pre">forms/role.py</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django</span> <span class="kn">import</span> <span class="n">forms</span>
+
+<span class="kn">from</span> <span class="nn">rbac.models</span> <span class="kn">import</span> <span class="n">Role</span>
+
+
+<span class="k">class</span> <span class="nc">RoleForm</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">ModelForm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;角色&quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">Role</span>        <span class="c1"># 指定使用模型</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span>  <span class="c1"># 指定字段</span>
+        <span class="n">widgets</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="n">forms</span><span class="o">.</span><span class="n">TextInput</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;form-control&#39;</span><span class="p">})</span>
+        <span class="p">}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">widgets</span></code> 给字段添加额外样式，<code class="docutils literal notranslate"><span class="pre">TextInput</span></code> 渲染为 <code class="docutils literal notranslate"><span class="pre">input</span></code>
+输入框，<code class="docutils literal notranslate"><span class="pre">attrs</span></code> 添加属性，渲染后结果：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;title&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-control&quot;</span> <span class="n">maxlength</span><span class="o">=</span><span class="s2">&quot;32&quot;</span> <span class="n">required</span><span class="o">=</span><span class="s2">&quot;&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;id_title&quot;</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>5、<code class="docutils literal notranslate"><span class="pre">rbac/role.html</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>{% extends &#39;layout.html&#39; %}
+
+{% block content %}
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;div class=&quot;btn-group&quot; style=&quot;margin: 5px 0&quot;&gt;
+            &lt;a class=&quot;btn btn-default&quot; href=&quot;{% url &#39;rbac:role_add&#39; %}&quot;&gt;
+                &lt;i class=&quot;fa fa-plus-square&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt; 添加角色
+            &lt;/a&gt;
+        &lt;/div&gt;
+
+        &lt;table class=&quot;table table-bordered table-hover&quot;&gt;
+            &lt;thead&gt;
+                &lt;tr&gt;
+                    &lt;th&gt;ID&lt;/th&gt;
+                    &lt;th&gt;名称&lt;/th&gt;
+                    &lt;th&gt;操作&lt;/th&gt;
+                &lt;/tr&gt;
+            &lt;/thead&gt;
+            &lt;tbody&gt;
+            {% for role in role_list %}
+                &lt;tr&gt;
+                    &lt;td&gt;{{ role.id }}&lt;/td&gt;
+                    &lt;td&gt;{{ role.title }}&lt;/td&gt;
+                    &lt;td&gt;
+                        &lt;a style=&quot;color: #333333;&quot; href=&quot;{% url &#39;rbac:role_edit&#39; pk=role.id %}&quot;&gt;
+                            &lt;i class=&quot;fa fa-edit&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/a&gt;
+                        |
+                        &lt;a style=&quot;color: #d9534f;&quot; href=&quot;{% url &#39;rbac:role_del&#39; pk=role.id %}&quot;&gt;&lt;i
+                                class=&quot;fa fa-trash-o&quot;&gt;&lt;/i&gt;&lt;/a&gt;
+                    &lt;/td&gt;
+                &lt;/tr&gt;
+            {% endfor %}
+            &lt;/tbody&gt;
+        &lt;/table&gt;
+    &lt;/div&gt;
+{% endblock %}
+
+注意：这里使用的是 ``Django``
+模板语法传递值：\ ``{% url &#39;rbac:role_edit&#39; pk=role.id %}``\ ，\ ``pk``
+与 ``url`` 路由中的 ``pk`` 保持一致！
+</pre></div>
+</div>
+<p>6、<code class="docutils literal notranslate"><span class="pre">rbac/change.html</span></code></p>
+<p>因为添加、编辑除了数据不同，其他都是一致，因此可使用同一页面：</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>{% extends &#39;layout.html&#39; %}
+{% block css %}
+    <span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+        <span class="nt">ul</span> <span class="p">{</span>
+            <span class="k">list-style-type</span><span class="p">:</span> <span class="kc">none</span><span class="p">;</span>
+            <span class="k">padding</span><span class="p">:</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nt">ul</span> <span class="nt">li</span> <span class="p">{</span>
+            <span class="k">float</span><span class="p">:</span> <span class="kc">left</span><span class="p">;</span>
+            <span class="k">padding</span><span class="p">:</span> <span class="mi">10</span><span class="kt">px</span><span class="p">;</span>
+            <span class="k">padding-left</span><span class="p">:</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="k">width</span><span class="p">:</span> <span class="mi">80</span><span class="kt">px</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nt">ul</span> <span class="nt">li</span> <span class="nt">i</span> <span class="p">{</span>
+            <span class="k">font-size</span><span class="p">:</span> <span class="mi">18</span><span class="kt">px</span><span class="p">;</span>
+            <span class="k">margin-left</span><span class="p">:</span> <span class="mi">5</span><span class="kt">px</span><span class="p">;</span>
+            <span class="k">color</span><span class="p">:</span> <span class="mh">#6d6565</span><span class="p">;</span>
+        <span class="p">}</span>
+
+    <span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
+{% endblock %}
+
+{% block content %}
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;luffy-container&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">form</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;form-horizontal&quot;</span> <span class="na">method</span><span class="o">=</span><span class="s">&quot;post&quot;</span> <span class="na">novalidate</span><span class="p">&gt;</span>
+            {% csrf_token %}
+
+            {% for field in forms %}
+                <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;form-group&quot;</span><span class="p">&gt;</span>
+                    <span class="p">&lt;</span><span class="nt">label</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;col-sm-2 control-label&quot;</span><span class="p">&gt;</span>{{ field.label }}<span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+                    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;col-sm-6&quot;</span><span class="p">&gt;</span>
+                        {{ field }}
+                        <span class="p">&lt;</span><span class="nt">span</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;color: red;&quot;</span><span class="p">&gt;</span>{{ field.errors.0 }}<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+                    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+                <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+            {% endfor %}
+
+            <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;form-group&quot;</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;col-sm-offset-2 col-sm-8&quot;</span><span class="p">&gt;</span>
+                    <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;submit&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;btn btn-default&quot;</span><span class="p">&gt;</span>提交<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+                <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+{% endblock %}
+</pre></div>
+</div>
+<p>7、<code class="docutils literal notranslate"><span class="pre">rbac/delete.html</span></code></p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>{% extends &#39;layout.html&#39; %}
+
+{% block content %}
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;luffy-container&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;alert alert-danger&quot;</span> <span class="na">role</span><span class="o">=</span><span class="s">&quot;alert&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">form</span> <span class="na">method</span><span class="o">=</span><span class="s">&quot;post&quot;</span><span class="p">&gt;</span>
+                {% csrf_token %}
+                <span class="p">&lt;</span><span class="nt">p</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;font-size: 13px;&quot;</span><span class="p">&gt;&lt;</span><span class="nt">i</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;fa fa-warning&quot;</span> <span class="na">aria-hidden</span><span class="o">=</span><span class="s">&quot;true&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">i</span><span class="p">&gt;</span> 删除后将不可恢复，请确定是否删除？<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+
+
+                <span class="p">&lt;</span><span class="nt">div</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;margin-top: 20px;&quot;</span><span class="p">&gt;</span>
+                    <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{{ cancel }}&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;btn btn-default btn-sm&quot;</span><span class="p">&gt;</span>取消<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+
+                    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;submit&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;btn btn-danger btn-sm&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;确 认&quot;</span><span class="p">&gt;</span>
+                <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+            <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+{% endblock %}
+</pre></div>
+</div>
+<p>这里采用的是页面来提示用户是否删除，而非前端弹出层，与 <code class="docutils literal notranslate"><span class="pre">Django</span> <span class="pre">Admin</span></code>
+类似。</p>
+</div>
+<div class="section" id="id1">
+<h1>Django 获取项目中所有路由<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">django.utils.module_loading</span> <span class="kn">import</span> <span class="n">import_string</span>
+<span class="c1"># for django 1.0</span>
+<span class="c1"># from django.urls import RegexURLResolver, RegexURLPattern</span>
+<span class="c1"># for django 2.0</span>
+<span class="kn">from</span> <span class="nn">django.urls.resolvers</span> <span class="kn">import</span> <span class="n">URLResolver</span><span class="p">,</span> <span class="n">URLPattern</span>
+
+<span class="k">def</span> <span class="nf">check_url_exclude</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    排除一些特定的URL</span>
+<span class="sd">    :param url:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">regex</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">AUTO_DISCOVER_EXCLUDE</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="k">def</span> <span class="nf">recursion_urls</span><span class="p">(</span><span class="n">pre_namespace</span><span class="p">,</span> <span class="n">pre_url</span><span class="p">,</span> <span class="n">urlpatterns</span><span class="p">,</span> <span class="n">url_ordered_dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    递归的去获取URL</span>
+<span class="sd">    :param pre_namespace: namespace前缀，以后用户拼接name</span>
+<span class="sd">    :param pre_url: url前缀，以后用于拼接url</span>
+<span class="sd">    :param urlpatterns: 路由关系列表</span>
+<span class="sd">    :param url_ordered_dict: 用于保存递归中获取的所有路由</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">urlpatterns</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">URLPattern</span><span class="p">):</span>  <span class="c1"># 非路由分发，讲路由添加到url_ordered_dict</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">pre_namespace</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pre_namespace</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="p">,)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">name</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;URL路由中必须设置name属性&#39;</span><span class="p">)</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="n">pre_url</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">pattern</span><span class="p">)</span>
+            <span class="n">url_ordered_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">url</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)}</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">URLResolver</span><span class="p">):</span>  <span class="c1"># 路由分发，递归操作</span>
+            <span class="k">if</span> <span class="n">pre_namespace</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">namespace</span><span class="p">:</span>
+                    <span class="n">namespace</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pre_namespace</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">namespace</span><span class="p">,)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">namespace</span> <span class="o">=</span> <span class="n">pre_namespace</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">namespace</span><span class="p">:</span>
+                    <span class="n">namespace</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">namespace</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">namespace</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">recursion_urls</span><span class="p">(</span><span class="n">namespace</span><span class="p">,</span> <span class="n">pre_url</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">pattern</span><span class="p">),</span> <span class="n">item</span><span class="o">.</span><span class="n">url_patterns</span><span class="p">,</span> <span class="n">url_ordered_dict</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">get_all_url_dict</span><span class="p">(</span><span class="n">ignore_namespace_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    获取项目中所有的URL（必须有name别名），排除 admin</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ignore_list</span> <span class="o">=</span> <span class="n">ignore_namespace_list</span> <span class="ow">or</span> <span class="p">[]</span>
+    <span class="n">url_ordered_dict</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">md</span> <span class="o">=</span> <span class="n">import_string</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">ROOT_URLCONF</span><span class="p">)</span>
+
+    <span class="c1"># 判断命名空间有么有在 ignore_list 中，通过此可排除 admin</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">md</span><span class="o">.</span><span class="n">urlpatterns</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">namespace</span> <span class="ow">in</span> <span class="n">ignore_list</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">urlpatterns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+    <span class="n">recursion_urls</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">urlpatterns</span><span class="p">,</span> <span class="n">url_ordered_dict</span><span class="p">)</span>  <span class="c1"># 递归去获取所有的路由</span>
+
+    <span class="k">return</span> <span class="n">url_ordered_dict</span>
+</pre></div>
+</div>
+<p>调用获取：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">router_dict</span> <span class="o">=</span> <span class="n">get_all_url_dict</span><span class="p">(</span><span class="n">ignore_namespace_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;admin&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>获取后的数据结构：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">OrderedDict</span><span class="p">([(</span><span class="s1">&#39;login&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;login&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/login/&#39;</span><span class="p">}),</span> <span class="p">(</span><span class="s1">&#39;rbac:role_list&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:role_list&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/role/list/&#39;</span><span class="p">}),</span> <span class="p">(</span><span class="s1">&#39;rbac:role_add&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:role_add&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/role/add/&#39;</span><span class="p">}),</span> <span class="p">(</span><span class="s1">&#39;rbac:role_edit&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:role_edit&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/role/edit/(?P&lt;pk&gt;</span><span class="se">\\</span><span class="s1">d+)/&#39;</span><span class="p">}),</span> <span class="p">(</span><span class="s1">&#39;rbac:role_del&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:role_del&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/role/del/(?P&lt;pk&gt;</span><span class="se">\\</span><span class="s1">d+)/&#39;</span><span class="p">}),</span> <span class="p">(</span><span class="s1">&#39;rbac:menu_list&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:menu_list&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/menu/list/&#39;</span><span class="p">}),</span> <span class="p">(</span><span class="s1">&#39;rbac:menu_add&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:menu_add&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/menu/add/&#39;</span><span class="p">}),</span> <span class="p">(</span><span class="s1">&#39;rbac:menu_edit&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:menu_edit&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/menu/edit/(?P&lt;pk&gt;</span><span class="se">\\</span><span class="s1">d+)/&#39;</span><span class="p">}),</span> <span class="p">(</span><span class="s1">&#39;rbac:menu_del&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:menu_del&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/menu/del/(?P&lt;pk&gt;</span><span class="se">\\</span><span class="s1">d+)/&#39;</span><span class="p">}),</span> <span class="p">(</span><span class="s1">&#39;rbac:permission_add&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:permission_add&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/permission/add/&#39;</span><span class="p">}),</span> <span class="p">(</span><span class="s1">&#39;rbac:permission_edit&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:permission_edit&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/permission/edit/(?P&lt;pk&gt;</span><span class="se">\\</span><span class="s1">d+)/&#39;</span><span class="p">}),</span> <span class="p">(</span><span class="s1">&#39;rbac:permission_del&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:permission_del&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/permission/del/(?P&lt;pk&gt;</span><span class="se">\\</span><span class="s1">d+)/&#39;</span><span class="p">}),</span> <span class="p">(</span><span class="s1">&#39;rbac:multi_permission&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:multi_permission&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/multi/permission/&#39;</span><span class="p">}),</span> <span class="p">(</span><span class="s1">&#39;rbac:distribute_permissions&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:distribute_permissions&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/distribute/permissions/&#39;</span><span class="p">})])</span>
+
+<span class="c1"># 循环后的数据</span>
+
+<span class="n">login</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;login&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/login/&#39;</span><span class="p">}</span>
+<span class="n">rbac</span><span class="p">:</span><span class="n">role_list</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:role_list&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/role/list/&#39;</span><span class="p">}</span>
+<span class="n">rbac</span><span class="p">:</span><span class="n">role_add</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:role_add&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/role/add/&#39;</span><span class="p">}</span>
+<span class="n">rbac</span><span class="p">:</span><span class="n">role_edit</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:role_edit&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/role/edit/(?P&lt;pk&gt;</span><span class="se">\\</span><span class="s1">d+)/&#39;</span><span class="p">}</span>
+<span class="n">rbac</span><span class="p">:</span><span class="n">role_del</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:role_del&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/role/del/(?P&lt;pk&gt;</span><span class="se">\\</span><span class="s1">d+)/&#39;</span><span class="p">}</span>
+<span class="n">rbac</span><span class="p">:</span><span class="n">menu_list</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:menu_list&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/menu/list/&#39;</span><span class="p">}</span>
+<span class="n">rbac</span><span class="p">:</span><span class="n">menu_add</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:menu_add&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/menu/add/&#39;</span><span class="p">}</span>
+<span class="n">rbac</span><span class="p">:</span><span class="n">menu_edit</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:menu_edit&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/menu/edit/(?P&lt;pk&gt;</span><span class="se">\\</span><span class="s1">d+)/&#39;</span><span class="p">}</span>
+<span class="n">rbac</span><span class="p">:</span><span class="n">menu_del</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:menu_del&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/menu/del/(?P&lt;pk&gt;</span><span class="se">\\</span><span class="s1">d+)/&#39;</span><span class="p">}</span>
+<span class="n">rbac</span><span class="p">:</span><span class="n">permission_add</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:permission_add&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/permission/add/&#39;</span><span class="p">}</span>
+<span class="n">rbac</span><span class="p">:</span><span class="n">permission_edit</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:permission_edit&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/permission/edit/(?P&lt;pk&gt;</span><span class="se">\\</span><span class="s1">d+)/&#39;</span><span class="p">}</span>
+<span class="n">rbac</span><span class="p">:</span><span class="n">permission_del</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:permission_del&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/permission/del/(?P&lt;pk&gt;</span><span class="se">\\</span><span class="s1">d+)/&#39;</span><span class="p">}</span>
+<span class="n">rbac</span><span class="p">:</span><span class="n">multi_permission</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:multi_permission&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/multi/permission/&#39;</span><span class="p">}</span>
+<span class="n">rbac</span><span class="p">:</span><span class="n">distribute_permissions</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;rbac:distribute_permissions&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;/rbac/distribute/permissions/&#39;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>参考文章：<code class="docutils literal notranslate"><span class="pre">https://www.cnblogs.com/harryblog/p/10494519.html</span></code></p>
+</div>
+<div class="section" id="id2">
+<h1>Django 按时间过滤搜索<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>import datetime
+
+# 大于等于昨天某个时间，即昨天这个时候到现在新增用户数
+now = datetime.datetime.now()
+yesterday = now - datetime.timedelta(hours=23, minutes=59, seconds=59)
+user_nums = UserProfile.objects.filter(date_joined__gte=yesterday)
+
+# 其他
+# 大于：gt、小于：lt、小于等于：lte
+
+today = datetime.datetime.now().day  # 今天
+yesterday = (datetime.datetime.now() - datetime.timedelta(days=1)).day  # 昨天
+
+# 查询今日、昨天的新增用户数量
+UserProfile.objects.filter(date_joined__day=today).count()
+
+# 查询时间段
+start_date = datetime.date(2020, 4, 20)
+end_date = datetime.date(2020, 5, 4)
+user_nums = UserProfile.objects.filter(date_joined__range=(start_date, end_date)).count()
+print(user_nums)
+
+# 查询某年、某月、某日、周几
+UserProfile.objects.filter(date_joined__year=2020)
+UserProfile.objects.filter(date_joined__month=5)
+UserProfile.objects.filter(date_joined__day=4)
+UserProfile.objects.filter(date_joined__week_day=2)
+
+参考文章：\ ``https://blog.csdn.net/weixin_40907382/article/details/79242989``
+</pre></div>
+</div>
+<p>优秀博客：<code class="docutils literal notranslate"><span class="pre">https://www.cnblogs.com/apollo1616/category/1351535.html</span></code></p>
+</div>
+<div class="section" id="id3">
+<h1>优雅的 Django 过滤搜索<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@method_decorator</span><span class="p">(</span><span class="n">login_required</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;get&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">UserListView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;用户列表&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">condition</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s1">&#39;mobile&#39;</span><span class="p">,</span> <span class="s1">&#39;email&#39;</span><span class="p">,</span> <span class="s1">&#39;date_joined&#39;</span><span class="p">]</span>
+        <span class="n">username</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+
+        <span class="c1"># 过滤查询</span>
+        <span class="k">if</span> <span class="n">username</span><span class="p">:</span>
+            <span class="n">condition</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">username</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">UserProfile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="o">**</span><span class="n">condition</span><span class="p">)</span><span class="o">.</span><span class="n">extra</span><span class="p">(</span>
+                <span class="n">select</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;date_joined&quot;</span><span class="p">:</span> <span class="s2">&quot;DATE_FORMAT(date_joined, &#39;</span><span class="si">%%</span><span class="s2">Y-</span><span class="si">%%</span><span class="s2">m-</span><span class="si">%%</span><span class="s2">d </span><span class="si">%%</span><span class="s2">H:</span><span class="si">%%</span><span class="s2">i:</span><span class="si">%%</span><span class="s2">s&#39;)&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="o">*</span><span class="n">fields</span><span class="p">)))</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">UserProfile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="o">**</span><span class="n">condition</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="o">*</span><span class="n">fields</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>正常搜索时，<code class="docutils literal notranslate"><span class="pre">condition</span></code> 为空，查询所有，当过滤时，<code class="docutils literal notranslate"><span class="pre">condition</span></code>
+为：<code class="docutils literal notranslate"><span class="pre">{'username':</span> <span class="pre">username}</span></code>，查询某个用户。</p>
+</div>
+<div class="section" id="django-admin2fa">
+<h1>django-admin实现2FA双因子认证的方法<a class="headerlink" href="#django-admin2fa" title="永久链接至标题">¶</a></h1>
+<p>目的：增加 Admin 的安全</p>
+<p>1、安装：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">django_otp</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">qrcode</span>
+</pre></div>
+</div>
+<p>2、配置 <code class="docutils literal notranslate"><span class="pre">settings</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;django.contrib.admin&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.auth&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.contenttypes&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.sessions&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.messages&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.staticfiles&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;app.apps.AppConfig&#39;</span><span class="p">,</span>
+
+    <span class="c1"># 新增</span>
+    <span class="s1">&#39;django_otp&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django_otp.plugins.otp_totp&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">MIDDLEWARE</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;django.middleware.security.SecurityMiddleware&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.sessions.middleware.SessionMiddleware&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.middleware.common.CommonMiddleware&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.middleware.csrf.CsrfViewMiddleware&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.auth.middleware.AuthenticationMiddleware&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.messages.middleware.MessageMiddleware&#39;</span><span class="p">,</span>
+
+    <span class="c1"># 新增</span>
+    <span class="s1">&#39;django.middleware.clickjacking.XFrameOptionsMiddleware&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django_otp.middleware.OTPMiddleware&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.messages.middleware.MessageMiddleware&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.middleware.clickjacking.XFrameOptionsMiddleware&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>3、配置 <code class="docutils literal notranslate"><span class="pre">urls.py</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">admin</span>
+<span class="kn">from</span> <span class="nn">django.urls</span> <span class="kn">import</span> <span class="n">path</span>
+
+<span class="c1"># 新增</span>
+<span class="kn">from</span> <span class="nn">django_otp.admin</span> <span class="kn">import</span> <span class="n">OTPAdminSite</span>
+
+<span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">=</span> <span class="n">OTPAdminSite</span>
+
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;admin/&#39;</span><span class="p">,</span> <span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">urls</span><span class="p">),</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>4、迁移生成数据表：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">makemigrations</span>
+<span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">migrate</span>
+<span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">migrate</span> <span class="n">otp_totp</span>
+</pre></div>
+</div>
+<p>5、创建超级用户：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">createsuperuser</span>
+</pre></div>
+</div>
+<p>运行项目，访问 <code class="docutils literal notranslate"><span class="pre">admin</span></code> 平台，发现除了用户名和密码之外还多了一个
+<code class="docutils literal notranslate"><span class="pre">Token</span></code> 验证。</p>
+<p>注释上面有关 <code class="docutils literal notranslate"><span class="pre">django-otp</span></code> 的所有配置，重新访问 <code class="docutils literal notranslate"><span class="pre">admin</span></code>
+平台，进入之后选择 <code class="docutils literal notranslate"><span class="pre">TOTP</span> <span class="pre">device</span></code>，新增用户，点击 <code class="docutils literal notranslate"><span class="pre">User</span></code> 旁边的
+<strong>搜索框</strong>，选择上面注册的 <code class="docutils literal notranslate"><span class="pre">admin</span></code> 用户，然后保存。</p>
+<p>回到用户列表，发现多个了一个 <code class="docutils literal notranslate"><span class="pre">qrcode</span></code>
+字段，点击就能显示出二维码，收集下载 <code class="docutils literal notranslate"><span class="pre">app</span> <span class="pre">FreeOTP</span></code>，登陆 <code class="docutils literal notranslate"><span class="pre">admin</span></code>
+平台时，用 <code class="docutils literal notranslate"><span class="pre">app</span></code> 扫描二维码，生成口令然后登陆。</p>
+<blockquote>
+<div><p>注意：记得取消上面有个 django-otp 的注释！</p>
+</div></blockquote>
+<p><strong>其他方式增加 Admin 安全</strong></p>
+<p>1、修改 <code class="docutils literal notranslate"><span class="pre">admin</span></code> 的访问 <code class="docutils literal notranslate"><span class="pre">URL</span></code>，使用比较难猜测的地址</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>urlpatterns += i18n_patterns(
+    url(r’^super-secret/’, admin.site.urls, name=’admin’),
+)
+</pre></div>
+</div>
+<p>2、配置 <code class="docutils literal notranslate"><span class="pre">nginx</span></code> 来限制访问 <code class="docutils literal notranslate"><span class="pre">ip</span></code>：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">location</span> <span class="o">/</span><span class="n">admin</span><span class="o">/</span> <span class="p">{</span>    <span class="c1"># 允许192.168.10.100访问此路由</span>
+    <span class="n">allow</span> <span class="mf">192.168</span><span class="o">.</span><span class="mf">10.100</span><span class="p">;</span>    <span class="c1"># 禁止所有其他IP访问</span>
+    <span class="n">deny</span> <span class="nb">all</span><span class="p">;</span>
+    <span class="o">...</span><span class="n">其他常规配置项</span><span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>参考文章</strong></p>
+<ul class="simple">
+<li><p>基于Django的双因子认证实现：<code class="docutils literal notranslate"><span class="pre">https://www.freebuf.com/articles/network/150071.html</span></code></p></li>
+<li><p>django-admin实现2FA双因子认证的方法：<code class="docutils literal notranslate"><span class="pre">https://jingyan.baidu.com/article/49ad8bce188ce71835d8fa7a.html</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">django-otp</span></code>：<code class="docutils literal notranslate"><span class="pre">https://django-otp-official.readthedocs.io/en/latest/</span></code></p></li>
+<li><p>django项目:nginx怎么配置来限制ip对后台admin的访问？：<code class="docutils literal notranslate"><span class="pre">http://www.imooc.com/wenda/detail/516371</span></code></p></li>
+<li><p>「译」5 种方法构建安全的 Django
+Admin：<code class="docutils literal notranslate"><span class="pre">https://zhuanlan.zhihu.com/p/28517753</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="json-in-order-to-allow-non-dict-objects-to-be-serialized-set-the-safe-parameter-t">
+<h1>使用 Json 转换时出现<code class="docutils literal notranslate"><span class="pre">In</span> <span class="pre">order</span> <span class="pre">to</span> <span class="pre">allow</span> <span class="pre">non-dict</span> <span class="pre">objects</span> <span class="pre">to</span> <span class="pre">be</span> <span class="pre">serialized</span> <span class="pre">set</span> <span class="pre">the</span> <span class="pre">safe</span> <span class="pre">parameter</span> <span class="pre">t</span></code><a class="headerlink" href="#json-in-order-to-allow-non-dict-objects-to-be-serialized-set-the-safe-parameter-t" title="永久链接至标题">¶</a></h1>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">JsonResponse</span>
+
+
+<span class="k">class</span> <span class="nc">Publishs</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;发布者&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># publish = Publish.objects.all()</span>
+        <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">(</span><span class="s1">&#39;ok&#39;</span><span class="p">)</span>       <span class="c1"># 这一行，在后面添加一个 safe=False</span>
+</pre></div>
+</div>
+<p>错误原因：转换的不是一个字典 解决办法：使用 <code class="docutils literal notranslate"><span class="pre">JsonResponse</span></code>
+时，如果不是字典类型，需要添加 <code class="docutils literal notranslate"><span class="pre">safe=False</span></code></p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to DockerDoc’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, hubery_jun
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

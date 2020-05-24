@@ -1,0 +1,1172 @@
+form 表单注册验证
+=================
+
+1、\ ``users_view.py``
+
+.. code:: python
+
+    from django.contrib import auth
+    from django.contrib.auth import logout, login
+    from django.http import JsonResponse
+    from django.shortcuts import render, redirect
+    from django.urls import reverse
+    from django.views import View
+
+
+    from .forms import RegisterForm
+
+
+    class RegisterView(View):
+        """注册视图"""
+
+        def get(self, request):
+            return render(request, 'users/register.html')
+
+        def post(self, request):
+            register_form = RegisterForm(request.POST)
+            ret = dict(register_form=register_form)
+
+            if register_form.is_valid():
+                user = register_form.save()
+
+                return redirect('login')
+
+            return render(request, 'users/register.html', ret)
+
+2、\ ``forms.py``
+
+.. code:: python
+
+    import re
+
+    from django import forms
+    from django.contrib.auth.hashers import make_password
+    from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
+
+    from .models import UserProfile
+
+
+    class RegisterForm(forms.ModelForm):
+        """注册"""
+        username = forms.CharField(
+            required=True,
+            min_length=4,
+            max_length=20,
+            error_messages={
+                "required": "用户名不能为空",
+                "min_length": "用户名长度最少4位数",
+                "max_length": "用户名长度最长20位数",
+            }
+        )
+
+        password = forms.CharField(
+            required=True,
+            min_length=6,
+            max_length=20,
+            error_messages={
+                "required": "密码不能为空",
+                "min_length": "密码长度最少6位数",
+                "max_length": "密码长度最长20位数",
+            }
+        )
+
+        confirm_password = forms.CharField(
+            required=True,
+            min_length=6,
+            max_length=20,
+            error_messages={
+                "required": "密码不能为空",
+                "min_length": "密码长度最少6位数",
+                "max_length": "密码长度最长20位数",
+            }
+        )
+
+        def clean(self):
+            """这里面的错误会在 non_field_errors 中显示"""
+            cleaned_data = self.cleaned_data
+            username = cleaned_data.get('username')
+            password = cleaned_data.get('password')
+            confirm_password = cleaned_data.get('confirm_password')
+
+            if UserProfile.objects.filter(username=username).count():
+                raise ValidationError('用户名：{}已存在'.format(username))
+
+            if password != confirm_password:
+                raise ValidationError("两次密码输入不一致")
+
+            # 密码加密
+            cleaned_data['password'] = make_password(confirm_password)
+
+            # REGEX_MOBILE = "^1[3578]\d{9}$|^147\d{8}$|^176\d{8}$"
+            # if not re.match(REGEX_MOBILE, username):
+            #     raise ValidationError("手机号码格式非法")
+
+        class Meta:
+            model = UserProfile
+            fields = ['username', 'password', 'confirm_password']
+
+3、\ ``register.html``
+
+.. code:: html
+
+    <div class="register-box-body">
+        <p class="login-box-msg">Register a new membership</p>
+
+        <form action="{% url 'register' %}" method="post">
+            {% csrf_token %}
+
+            <!-- 非字段错误提示 -->
+            {% if register_form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    {% for error in register_form.non_field_errors %}
+                        <p{% if forloop.last %} class="mb-0"{% endif %}>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="form-group has-feedback">
+                <input type="text" name="username"
+                        class="form-control {% if register_form.errors.username %}has-error{% endif %}"
+                        placeholder="用户名">
+                <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                <span class="form-text text-muted">{{ register_form.errors.username.0 }}</span>
+
+            </div>
+            <div class="form-group has-feedback">
+                <input type="password" name="password"
+                        class="form-control {% if register_form.errors.password %}has-error{% endif %}"
+                        placeholder="密码">
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                <span class="form-text text-muted">{{ register_form.errors.password.0 }}</span>
+
+            </div>
+            <div class="form-group has-feedback">
+                <input type="password" name="confirm_password"
+                        class="form-control {% if register_form.errors.confirm_password %}has-error{% endif %}"
+                        placeholder="确认密码">
+                <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
+                <span class="form-text text-muted">{{ register_form.errors.confirm_password.0 }}</span>
+
+            </div>
+
+            <div class="row">
+                <div class="col-xs-8">
+
+                </div>
+                <!-- /.col -->
+                <div class="col-xs-4">
+                    <button type="submit" class="btn btn-primary btn-block btn-flat">注册</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </form>
+
+
+        <a href="login.html" class="text-center">我已有账户，登陆</a>
+    </div>
+
+**创建用户的两种方式**
+
+1、未继承 ``ModelForm``
+
+.. code:: python
+
+    UserProfile.objects.create_user(**register_form.cleaned_data)
+
+2、继承 ``ModelForm``
+
+.. code:: python
+
+    register_form.save()
+
+    **注意**\ ： - 自定义 form 类，必须继承 ModelForm 才有 save() 方法！
+    - ModelForm 必须实现 ``Class Meta``\ ，否则报错 - ``clean()``
+    中验证的非字段错误，会加载到 ``non_field_errors`` 中，在前端可以使用
+    ``register_form.non_field_errors`` 显示
+
+远程连接 MySQL 数据库失败
+=========================
+
+``Ubuntu 18.04`` ``mysql``
+配置文件路径：\ ``/etc/mysql/mysql.conf.d/mysqld.cnf``
+
+1、\ ``ss -tlnp`` 命令查看网络接口开启状态，若没有开启 3306
+端口，或绑定了 ``127.0.0.1:3306``\ ，那么表示只允许本地访问。
+
+2、修改配置文件，将：\ ``bind-address：127.0.0.1`` 注释掉。
+
+3、重启 ``mysql`` 服务：
+
+.. code:: mysql
+
+    service mysql restart   # 重启
+    service mysql status    # 查看状态
+    service mysql start # 开启
+    service mysql stop  # 停止
+
+参考文章：\ ``https://blog.csdn.net/crossangles_2017/article/details/79529064``
+
+Django 开发之拆分 settings
+==========================
+
+**为什么要拆分 settings**
+
+线上生产环境和本地环境一些配置是不一样的，比如数据库的配置（本地是
+``sqlite3``\ ，而线上是 ``MySQL`` 或其他数据库；本地要加载
+``django-debug-toolbar``\ ，而线上不要。
+
+为了不用每次部署的时候，都大量改动
+``settings``\ ，拆分无疑是更好的选择。
+
+**步骤**
+
+-  新建 ``settings`` 包文件
+-  新建：\ ``base.py、develop.py、product.py``\ ，分别对应基础配置文件（即公共配置）、开发和线上环境
+-  删除原有 ``settings.py``
+-  更改：\ ``manage.py`` 和 ``wsgi.py``
+-  更改 ``pycharm Environment variables``\ ：如果是用 ``pycharm``
+   开发的话
+
+下面分别是几个 ``py`` 文件参考：
+
+1、\ ``base.py``
+
+.. code:: python
+
+    import os
+
+    # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+    BASE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "..")
+
+
+    INSTALLED_APPS = [
+        'django.contrib.admin',
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+
+        'system',
+    ]
+
+    MIDDLEWARE = [
+        'django.middleware.security.SecurityMiddleware',
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.common.CommonMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+        'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    ]
+
+    ROOT_URLCONF = 'Box.urls'
+
+    TEMPLATES = [
+        {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'DIRS': [os.path.join(BASE_DIR, 'templates')]
+            ,
+            'APP_DIRS': True,
+            'OPTIONS': {
+                'context_processors': [
+                    'django.template.context_processors.debug',
+                    'django.template.context_processors.request',
+                    'django.contrib.auth.context_processors.auth',
+                    'django.contrib.messages.context_processors.messages',
+                ],
+            },
+        },
+    ]
+
+    WSGI_APPLICATION = 'Box.wsgi.application'
+
+    # Database
+    # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+
+    # Password validation
+    # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
+
+    AUTH_PASSWORD_VALIDATORS = [
+        {
+            'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        },
+    ]
+
+    # Internationalization
+    # https://docs.djangoproject.com/en/2.1/topics/i18n/
+
+    LANGUAGE_CODE = 'zh-hans'
+
+    TIME_ZONE = 'Asia/Shanghai'
+
+    USE_I18N = True
+
+    USE_L10N = True
+
+    USE_TZ = False
+
+    STATIC_URL = '/static/'
+
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+    LOGIN_URL = '/login/'
+
+    # 找到 apps
+    import sys
+
+    sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
+    AUTH_USER_MODEL = 'system.UserProfile'
+
+    # 发送邮件设置
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    # SMTP地址
+    EMAIL_HOST = 'smtp.exmail.qq.com'
+    # SMTP端口
+    EMAIL_PORT = 25
+    # 自己的邮箱
+    EMAIL_HOST_USER = 'xxy@rusell.top'
+    # 自己的邮箱授权码，非密码
+    from utils.common.encryption import EnCryPt
+    EMAIL_HOST_PASSWORD = EnCryPt().debase64(b'Rm9BZUZ4TGNNd3liaW5YTA==')
+
+    SUBJECT = "xx 后台管理系统密码重置"
+    MESSAGE = "您好，您的验证码为：{}，有效期 1 分钟。"
+
+    注意：因为原有 ``setting.py`` 位置和 ``base.py``
+    不一致，因此需要修改 ``BASE_DIR`` 的路径才能找到 ``static`` 和
+    ``template``\ 。
+
+2、\ ``develop.py``
+
+.. code:: python
+
+    from .base import *  # NOQA      # 告诉 pe8 不用检测
+
+    SECRET_KEY = 'development-secret-key'
+
+    DEBUG = True
+
+    ALLOWED_HOSTS = ['*']
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+
+3、\ ``product.py``
+
+.. code:: python
+
+    from .base import *  # NOQA
+
+    SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
+
+    DEBUG = False
+
+    ALLOWED_HOSTS = ['192.168.188.145']
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'vpn',
+            'USER': 'root',
+            'PASSWORD': 'root',
+            'HOST': '192.168.188.145',
+            'PORT': 3306
+        }
+    }
+
+
+    # 静态文件收集路径
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static_all')
+
+    注意：线上部署时 DEBUG 为 False，Django 采用 STATIC\_ROOT
+    找到静态文件
+
+4、修改 ``manage.py`` 和 ``wsgi.py``
+
+.. code:: python
+
+    #!/usr/bin/env python
+    import os
+    import sys
+
+    if __name__ == '__main__':
+        # 修改
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Box.settings.develop")
+        # os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Box.settings.product")
+
+        try:
+            from django.core.management import execute_from_command_line
+        except ImportError as exc:
+            raise ImportError(
+                "Couldn't import Django. Are you sure it's installed and "
+                "available on your PYTHONPATH environment variable? Did you "
+                "forget to activate a virtual environment?"
+            ) from exc
+        execute_from_command_line(sys.argv)
+
+``wsgi.py`` 修改方法一致。
+
+5、若使用 ``pycharm`` 开发，还需要修改：\ ``Environment variables``
+变量的值。
+
+点击 ``Edit Configurations``\ ，点击之后修改里面的
+``Environment variables`` 为：
+
+.. code:: python
+
+    PYTHONUNBUFFERED=1;DJANGO_SETTINGS_MODULE=Project.settings.develop
+
+使用时，只需修改：\ ``manage.py`` 和 ``wsgi.py``
+的值即可区分开发与生产环境，非常方便。
+
+参考文章：\ ``https://zhuanlan.zhihu.com/p/67984033``
+
+AES 加密
+========
+
+安装：\ ``pip install pycryptodome``
+
+.. code:: python
+
+    class OptCrypt:
+        """配置文件加密解密类"""
+
+        def add_to_32(self, value):
+            """ str不是32的倍数那就补足为16的倍数"""
+            while len(value) % 32 != 0:
+                value += '\0'
+            return str.encode(value)  # 返回bytes
+
+        def aes_encrypt(self, text):
+            """加密方法"""
+            # 秘钥
+            key = 'lymhqnoetl15321'
+            # 待加密文本
+            # 初始化加密器
+            aes = AES.new(self.add_to_32(key), AES.MODE_ECB)
+            # 先进行aes加密
+            encrypt_aes = aes.encrypt(self.add_to_32(text))
+            # 用base64转成字符串形式
+            encrypted_text = str(base64.encodebytes(encrypt_aes), encoding='utf-8').strip()  # 执行加密并转码返回bytes
+
+            return encrypted_text
+
+        def aes_decrypt(self, text):
+            """解密方法"""
+            # 秘钥
+            key = 'lymhqnoetl15321'
+            # 密文
+            # 初始化加密器
+            aes = AES.new(self.add_to_32(key), AES.MODE_ECB)
+            # 优先逆向解密base64成bytes
+            base64_decrypted = base64.decodebytes(text.encode(encoding='utf-8'))
+            # 执行解密密并转码返回str
+            decrypted_text = str(aes.decrypt(base64_decrypted), encoding='utf-8').replace('\0', '').strip()
+
+            return decrypted_text
+
+Django 查询：按年/月/天查询某个字段的数目
+=========================================
+
+**需求**
+
+查询过去一年到现在每天新增（注册）的用户数目
+
+1、\ ``models.py``
+
+.. code:: python
+
+    class UserInfo(AbstractUser):
+        """用户信息"""
+        name = models.CharField(max_length=20, default="", verbose_name="姓名")
+        gender_choices = (("male", "男"), ("female", "女"))
+        birthday = models.DateTimeField(null=True, blank=True, verbose_name="出生日期")
+        gender = models.CharField(max_length=10, choices=gender_choices, default="female", verbose_name="性别")
+
+2、\ ``orm``
+
+.. code:: python
+
+    from django.db.models.functions import ExtractYear, ExtractMonth, ExtractDay
+
+    # date_joined 为内置 User 模型的字段，即加入日期
+    one_year_ago = datetime.datetime.now() - datetime.timedelta(days=365)  # 一年前
+
+    user_list = UserProfile.objects.filter(date_joined__gte=one_year_ago).annotate(
+                year=ExtractYear('date_joined'), month=ExtractMonth('date_joined'), day=ExtractDay('date_joined')
+            ).values('year', 'month', 'day').order_by('year', 'month', 'day').annotate(n=Count('id'))
+
+运行结果：
+
+.. code:: python
+
+    <QuerySet [{'year': 2020, 'month': 1, 'day': 1, 'n': 1}, {'year': 2020, 'month': 2, 'day': 12, 'n': 1}, {'year': 2020, 'month': 4, 'day': 17, 'n': 1}, {'year': 2020, 'month': 4, 'day': 18, 'n': 2}, {'year': 2020, 'month': 4, 'day': 30, 'n': 1}]>
+
+参考文章：\ ``https://cloud.tencent.com/developer/ask/131410``
+
+Django CBV 装饰器
+=================
+
+1、\ ``views.py``
+
+.. code:: python
+
+    @method_decorator(login_required, name='get')
+    @method_decorator(check_role, name='get')
+    class RouteView(TemplateView):
+        """路由器列表视图"""
+
+        template_name = 'system/route.html'
+
+2、\ ``custom.py``
+
+.. code:: python
+
+    from django.shortcuts import render
+    from django.conf import settings
+
+    def check_role(func):
+        """
+        检查当前登陆用户是否是 "后台管理" 角色，若是，则跳转到首页，否则跳转到路由器管理页面
+        :param func:
+        :return:
+        """
+        def inner(request, *args, **kwargs):
+            if request.user.roles.all()[0].name == settings.USER_ROLE_NAME:
+                return render(request, 'index.html')
+
+            return func(request)    # 执行 RouteView() 的 get() 方法
+
+        return inner
+
+ModelForm 实现增删改查
+======================
+
+1、\ ``models.py``
+
+.. code:: python
+
+    from django.db import models
+
+
+    class Menu(models.Model):
+        """
+        菜单表
+        """
+        title = models.CharField(max_length=32, unique=True, verbose_name='菜单名称')
+        icon = models.CharField(verbose_name='菜单图标', max_length=32)
+
+        def __str__(self):
+            return self.title
+
+
+    class Permission(models.Model):
+        """
+        权限表
+        """
+        title = models.CharField(verbose_name='标题', max_length=32)
+        url = models.CharField(verbose_name='含正则的URL', max_length=128)
+        name = models.CharField(verbose_name='URL别名', max_length=32, null=True, blank=True)
+
+        parent = models.ForeignKey(verbose_name='父权限', to='Permission', null=True, blank=True, on_delete=models.CASCADE)
+        menu = models.ForeignKey(verbose_name='菜单', to='Menu', null=True, blank=True, on_delete=models.CASCADE)
+
+        def __str__(self):
+            return self.title
+
+
+    class Role(models.Model):
+        """
+        角色
+        """
+        title = models.CharField(verbose_name='角色名称', max_length=32)
+        permissions = models.ManyToManyField(verbose_name='拥有的所有权限', to='Permission', blank=True)
+
+        def __str__(self):
+            return self.title
+
+
+    class UserInfo(models.Model):
+        """
+        用户表
+        """
+        name = models.CharField(verbose_name='用户名', max_length=32)
+        password = models.CharField(verbose_name='密码', max_length=64)
+        email = models.CharField(verbose_name='邮箱', max_length=32)
+        roles = models.ManyToManyField(verbose_name='拥有的所有角色', to='Role', blank=True)
+
+        def __str__(self):
+            return '{}：{}'.format(self.name, self.roles.all())
+
+2、\ ``urls.py``
+
+::
+
+    from django.urls import path, re_path
+
+    from rbac.views import views_role
+
+    app_name = 'rbac'
+    urlpatterns = [
+        re_path(r'^role/list/$', views_role.role_list, name='role_list'),
+        re_path(r'^role/add/$', views_role.role_add, name='role_add'),
+        re_path(r'^role/edit/(?P<pk>\d+)/$', views_role.role_edit, name='role_edit'),
+        re_path(r'^role/del/(?P<pk>\d+)/$', views_role.role_del, name='role_del'),
+
+    ]
+
+3、\ ``rbac/views_role.py``
+
+.. code:: python
+
+    from django.http import HttpResponse
+    from django.shortcuts import render, redirect
+    from django.urls import reverse
+
+    from rbac import models
+    from rbac.forms.role import RoleForm
+
+
+    def role_list(request):
+        """角色列表"""
+
+        role_list = models.Role.objects.all()
+
+        return render(request, 'rbac/role.html', {'role_list': role_list})
+
+
+    def role_add(request):
+        """添加角色"""
+        if request.method == 'GET':
+            forms = RoleForm()
+            return render(request, 'rbac/change.html', {'forms': forms})
+        else:
+            role_form = RoleForm(request.POST)
+            if role_form.is_valid():
+                role_form.save()
+                return redirect(reverse('rbac:role_list'))
+
+
+    def role_edit(request, pk):
+        """编辑角色"""
+        role = models.Role.objects.filter(id=pk).first()
+        if not role:
+            return HttpResponse('角色不存在')
+
+        if request.method == 'GET':
+            forms = RoleForm(instance=role)
+            return render(request, 'rbac/change.html', {'forms': forms})
+        else:
+            role_form = RoleForm(instance=role, data=request.POST)
+            if role_form.is_valid():
+                role_form.save()
+                return redirect(reverse('rbac:role_list'))
+
+
+    def role_del(request, pk):
+        """删除角色"""
+        origin_url = reverse('rbac:role_list')
+        if request.method == 'GET':
+            return render(request, 'rbac/delete.html', {'cancel': origin_url})
+
+        models.Role.objects.filter(id=pk).delete()
+
+        return redirect(reverse('rbac:role_list'))
+
+添加、编辑角色使用的是同一 ``form``
+表单：\ ``RoleForm``\ ，\ **需要注意的是**\ ：
+
+-  添加角色，渲染的是空白表单
+-  编辑角色，渲染的是有初始数据的表单，可给 ``RoleForm``
+   传实例对象：\ ``RoleForm(instance=role)``
+
+保存数据，使用 ``save()`` 方法保存即可。
+
+4、\ ``forms/role.py``
+
+.. code:: python
+
+    from django import forms
+
+    from rbac.models import Role
+
+
+    class RoleForm(forms.ModelForm):
+        """角色"""
+
+        class Meta:
+            model = Role        # 指定使用模型
+            fields = ['title']  # 指定字段
+            widgets = {
+                'title': forms.TextInput(attrs={'class': 'form-control'})
+            }
+
+``widgets`` 给字段添加额外样式，\ ``TextInput`` 渲染为 ``input``
+输入框，\ ``attrs`` 添加属性，渲染后结果：
+
+.. code:: python
+
+    <input type="text" name="title" class="form-control" maxlength="32" required="" id="id_title">
+
+5、\ ``rbac/role.html``
+
+.. code:: python
+
+    {% extends 'layout.html' %}
+
+    {% block content %}
+        <div class="container">
+            <div class="btn-group" style="margin: 5px 0">
+                <a class="btn btn-default" href="{% url 'rbac:role_add' %}">
+                    <i class="fa fa-plus-square" aria-hidden="true"></i> 添加角色
+                </a>
+            </div>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>名称</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for role in role_list %}
+                    <tr>
+                        <td>{{ role.id }}</td>
+                        <td>{{ role.title }}</td>
+                        <td>
+                            <a style="color: #333333;" href="{% url 'rbac:role_edit' pk=role.id %}">
+                                <i class="fa fa-edit" aria-hidden="true"></i></a>
+                            |
+                            <a style="color: #d9534f;" href="{% url 'rbac:role_del' pk=role.id %}"><i
+                                    class="fa fa-trash-o"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endblock %}
+
+    注意：这里使用的是 ``Django``
+    模板语法传递值：\ ``{% url 'rbac:role_edit' pk=role.id %}``\ ，\ ``pk``
+    与 ``url`` 路由中的 ``pk`` 保持一致！
+
+6、\ ``rbac/change.html``
+
+因为添加、编辑除了数据不同，其他都是一致，因此可使用同一页面：
+
+.. code:: html
+
+    {% extends 'layout.html' %}
+    {% block css %}
+        <style>
+            ul {
+                list-style-type: none;
+                padding: 0;
+            }
+
+            ul li {
+                float: left;
+                padding: 10px;
+                padding-left: 0;
+                width: 80px;
+            }
+
+            ul li i {
+                font-size: 18px;
+                margin-left: 5px;
+                color: #6d6565;
+            }
+
+        </style>
+    {% endblock %}
+
+    {% block content %}
+        <div class="luffy-container">
+            <form class="form-horizontal" method="post" novalidate>
+                {% csrf_token %}
+
+                {% for field in forms %}
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">{{ field.label }}</label>
+                        <div class="col-sm-6">
+                            {{ field }}
+                            <span style="color: red;">{{ field.errors.0 }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-8">
+                        <button type="submit" class="btn btn-default">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    {% endblock %}
+
+7、\ ``rbac/delete.html``
+
+.. code:: html
+
+    {% extends 'layout.html' %}
+
+    {% block content %}
+        <div class="luffy-container">
+            <div class="alert alert-danger" role="alert">
+                <form method="post">
+                    {% csrf_token %}
+                    <p style="font-size: 13px;"><i class="fa fa-warning" aria-hidden="true"></i> 删除后将不可恢复，请确定是否删除？</p>
+
+
+                    <div style="margin-top: 20px;">
+                        <a href="{{ cancel }}" class="btn btn-default btn-sm">取消</a>
+
+                        <input type="submit" class="btn btn-danger btn-sm" value="确 认">
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    {% endblock %}
+
+这里采用的是页面来提示用户是否删除，而非前端弹出层，与 ``Django Admin``
+类似。
+
+Django 获取项目中所有路由
+=========================
+
+.. code:: python
+
+    import re
+    from collections import OrderedDict
+    from django.conf import settings
+    from django.utils.module_loading import import_string
+    # for django 1.0
+    # from django.urls import RegexURLResolver, RegexURLPattern
+    # for django 2.0
+    from django.urls.resolvers import URLResolver, URLPattern
+
+    def check_url_exclude(url):
+        """
+        排除一些特定的URL
+        :param url:
+        :return:
+        """
+        for regex in settings.AUTO_DISCOVER_EXCLUDE:
+            if re.match(regex, url):
+                return True
+
+
+    def recursion_urls(pre_namespace, pre_url, urlpatterns, url_ordered_dict):
+        """
+        递归的去获取URL
+        :param pre_namespace: namespace前缀，以后用户拼接name
+        :param pre_url: url前缀，以后用于拼接url
+        :param urlpatterns: 路由关系列表
+        :param url_ordered_dict: 用于保存递归中获取的所有路由
+        :return:
+        """
+        for item in urlpatterns:
+            if isinstance(item, URLPattern):  # 非路由分发，讲路由添加到url_ordered_dict
+                if not item.name:
+                    continue
+                if pre_namespace:
+                    name = "%s:%s" % (pre_namespace, item.name,)
+                else:
+                    name = item.name
+                if not item.name:
+                    raise Exception('URL路由中必须设置name属性')
+                url = pre_url + str(item.pattern)
+                url_ordered_dict[name] = {'name': name, 'url': url.replace('^', '').replace('$', '')}
+
+            elif isinstance(item, URLResolver):  # 路由分发，递归操作
+                if pre_namespace:
+                    if item.namespace:
+                        namespace = "%s:%s" % (pre_namespace, item.namespace,)
+                    else:
+                        namespace = pre_namespace
+                else:
+                    if item.namespace:
+                        namespace = item.namespace
+                    else:
+                        namespace = None
+                recursion_urls(namespace, pre_url + str(item.pattern), item.url_patterns, url_ordered_dict)
+
+
+    def get_all_url_dict(ignore_namespace_list=None):
+        """
+        获取项目中所有的URL（必须有name别名），排除 admin
+        :return:
+        """
+        ignore_list = ignore_namespace_list or []
+        url_ordered_dict = OrderedDict()
+        urlpatterns = []
+
+        md = import_string(settings.ROOT_URLCONF)  
+        
+        # 判断命名空间有么有在 ignore_list 中，通过此可排除 admin 
+        for item in md.urlpatterns:
+            if item.namespace in ignore_list:
+                continue
+            urlpatterns.append(item)
+
+        recursion_urls(None, '/', urlpatterns, url_ordered_dict)  # 递归去获取所有的路由
+
+        return url_ordered_dict
+
+调用获取：
+
+.. code:: python
+
+    router_dict = get_all_url_dict(ignore_namespace_list=['admin'])
+
+获取后的数据结构：
+
+.. code:: python
+
+    OrderedDict([('login', {'name': 'login', 'url': '/login/'}), ('rbac:role_list', {'name': 'rbac:role_list', 'url': '/rbac/role/list/'}), ('rbac:role_add', {'name': 'rbac:role_add', 'url': '/rbac/role/add/'}), ('rbac:role_edit', {'name': 'rbac:role_edit', 'url': '/rbac/role/edit/(?P<pk>\\d+)/'}), ('rbac:role_del', {'name': 'rbac:role_del', 'url': '/rbac/role/del/(?P<pk>\\d+)/'}), ('rbac:menu_list', {'name': 'rbac:menu_list', 'url': '/rbac/menu/list/'}), ('rbac:menu_add', {'name': 'rbac:menu_add', 'url': '/rbac/menu/add/'}), ('rbac:menu_edit', {'name': 'rbac:menu_edit', 'url': '/rbac/menu/edit/(?P<pk>\\d+)/'}), ('rbac:menu_del', {'name': 'rbac:menu_del', 'url': '/rbac/menu/del/(?P<pk>\\d+)/'}), ('rbac:permission_add', {'name': 'rbac:permission_add', 'url': '/rbac/permission/add/'}), ('rbac:permission_edit', {'name': 'rbac:permission_edit', 'url': '/rbac/permission/edit/(?P<pk>\\d+)/'}), ('rbac:permission_del', {'name': 'rbac:permission_del', 'url': '/rbac/permission/del/(?P<pk>\\d+)/'}), ('rbac:multi_permission', {'name': 'rbac:multi_permission', 'url': '/rbac/multi/permission/'}), ('rbac:distribute_permissions', {'name': 'rbac:distribute_permissions', 'url': '/rbac/distribute/permissions/'})])
+
+    # 循环后的数据
+
+    login {'name': 'login', 'url': '/login/'}
+    rbac:role_list {'name': 'rbac:role_list', 'url': '/rbac/role/list/'}
+    rbac:role_add {'name': 'rbac:role_add', 'url': '/rbac/role/add/'}
+    rbac:role_edit {'name': 'rbac:role_edit', 'url': '/rbac/role/edit/(?P<pk>\\d+)/'}
+    rbac:role_del {'name': 'rbac:role_del', 'url': '/rbac/role/del/(?P<pk>\\d+)/'}
+    rbac:menu_list {'name': 'rbac:menu_list', 'url': '/rbac/menu/list/'}
+    rbac:menu_add {'name': 'rbac:menu_add', 'url': '/rbac/menu/add/'}
+    rbac:menu_edit {'name': 'rbac:menu_edit', 'url': '/rbac/menu/edit/(?P<pk>\\d+)/'}
+    rbac:menu_del {'name': 'rbac:menu_del', 'url': '/rbac/menu/del/(?P<pk>\\d+)/'}
+    rbac:permission_add {'name': 'rbac:permission_add', 'url': '/rbac/permission/add/'}
+    rbac:permission_edit {'name': 'rbac:permission_edit', 'url': '/rbac/permission/edit/(?P<pk>\\d+)/'}
+    rbac:permission_del {'name': 'rbac:permission_del', 'url': '/rbac/permission/del/(?P<pk>\\d+)/'}
+    rbac:multi_permission {'name': 'rbac:multi_permission', 'url': '/rbac/multi/permission/'}
+    rbac:distribute_permissions {'name': 'rbac:distribute_permissions', 'url': '/rbac/distribute/permissions/'}
+
+参考文章：\ ``https://www.cnblogs.com/harryblog/p/10494519.html``
+
+Django 按时间过滤搜索
+=====================
+
+.. code:: python
+
+    import datetime
+
+    # 大于等于昨天某个时间，即昨天这个时候到现在新增用户数
+    now = datetime.datetime.now()
+    yesterday = now - datetime.timedelta(hours=23, minutes=59, seconds=59)
+    user_nums = UserProfile.objects.filter(date_joined__gte=yesterday)
+
+    # 其他
+    # 大于：gt、小于：lt、小于等于：lte
+
+    today = datetime.datetime.now().day  # 今天
+    yesterday = (datetime.datetime.now() - datetime.timedelta(days=1)).day  # 昨天
+
+    # 查询今日、昨天的新增用户数量
+    UserProfile.objects.filter(date_joined__day=today).count()
+
+    # 查询时间段
+    start_date = datetime.date(2020, 4, 20)
+    end_date = datetime.date(2020, 5, 4)
+    user_nums = UserProfile.objects.filter(date_joined__range=(start_date, end_date)).count()
+    print(user_nums)
+
+    # 查询某年、某月、某日、周几
+    UserProfile.objects.filter(date_joined__year=2020)
+    UserProfile.objects.filter(date_joined__month=5)
+    UserProfile.objects.filter(date_joined__day=4)
+    UserProfile.objects.filter(date_joined__week_day=2)
+
+    参考文章：\ ``https://blog.csdn.net/weixin_40907382/article/details/79242989``
+
+优秀博客：\ ``https://www.cnblogs.com/apollo1616/category/1351535.html``
+
+优雅的 Django 过滤搜索
+======================
+
+.. code:: python
+
+    @method_decorator(login_required, name='get')
+    class UserListView(View):
+        """用户列表"""
+
+        def get(self, request):
+            condition = dict()
+            fields = ['id', 'username', 'mobile', 'email', 'date_joined']
+            username = request.GET.get("name")
+
+            # 过滤查询
+            if username:
+                condition['username'] = username
+
+            try:
+                ret = dict(data=list(UserProfile.objects.filter(**condition).extra(
+                    select={"date_joined": "DATE_FORMAT(date_joined, '%%Y-%%m-%%d %%H:%%i:%%s')"}).values(*fields)))
+            except Exception:
+                ret = dict(data=list(UserProfile.objects.filter(**condition).values(*fields)))
+
+            return JsonResponse(ret)
+
+正常搜索时，\ ``condition`` 为空，查询所有，当过滤时，\ ``condition``
+为：\ ``{'username': username}``\ ，查询某个用户。
+
+django-admin实现2FA双因子认证的方法
+===================================
+
+目的：增加 Admin 的安全
+
+1、安装：
+
+.. code:: python
+
+    pip install django_otp
+    pip install qrcode
+
+2、配置 ``settings``
+
+.. code:: python
+
+    INSTALLED_APPS = [
+        'django.contrib.admin',
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+        'app.apps.AppConfig',
+
+        # 新增
+        'django_otp',
+        'django_otp.plugins.otp_totp',
+    ]
+
+    MIDDLEWARE = [
+        'django.middleware.security.SecurityMiddleware',
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.common.CommonMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+
+        # 新增
+        'django.middleware.clickjacking.XFrameOptionsMiddleware',
+        'django_otp.middleware.OTPMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+        'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    ]
+
+3、配置 ``urls.py``
+
+.. code:: python
+
+    from django.contrib import admin
+    from django.urls import path
+
+    # 新增
+    from django_otp.admin import OTPAdminSite
+
+    admin.site.__class__ = OTPAdminSite
+
+    urlpatterns = [
+        path('admin/', admin.site.urls),
+    ]
+
+4、迁移生成数据表：
+
+.. code:: python
+
+    python manage.py makemigrations
+    python manage.py migrate
+    python manage.py migrate otp_totp
+
+5、创建超级用户：
+
+.. code:: python
+
+    python manage.py createsuperuser
+
+运行项目，访问 ``admin`` 平台，发现除了用户名和密码之外还多了一个
+``Token`` 验证。
+
+注释上面有关 ``django-otp`` 的所有配置，重新访问 ``admin``
+平台，进入之后选择 ``TOTP device``\ ，新增用户，点击 ``User`` 旁边的
+**搜索框**\ ，选择上面注册的 ``admin`` 用户，然后保存。
+
+回到用户列表，发现多个了一个 ``qrcode``
+字段，点击就能显示出二维码，收集下载 ``app FreeOTP``\ ，登陆 ``admin``
+平台时，用 ``app`` 扫描二维码，生成口令然后登陆。
+
+    注意：记得取消上面有个 django-otp 的注释！
+
+**其他方式增加 Admin 安全**
+
+1、修改 ``admin`` 的访问 ``URL``\ ，使用比较难猜测的地址
+
+.. code:: python
+
+    urlpatterns += i18n_patterns(
+        url(r’^super-secret/’, admin.site.urls, name=’admin’),
+    )
+
+2、配置 ``nginx`` 来限制访问 ``ip``\ ：
+
+.. code:: python
+
+    location /admin/ {    # 允许192.168.10.100访问此路由
+        allow 192.168.10.100;    # 禁止所有其他IP访问
+        deny all;
+        ...其他常规配置项}
+
+**参考文章**
+
+-  基于Django的双因子认证实现：\ ``https://www.freebuf.com/articles/network/150071.html``
+-  django-admin实现2FA双因子认证的方法：\ ``https://jingyan.baidu.com/article/49ad8bce188ce71835d8fa7a.html``
+-  ``django-otp``\ ：\ ``https://django-otp-official.readthedocs.io/en/latest/``
+-  django项目:nginx怎么配置来限制ip对后台admin的访问？：\ ``http://www.imooc.com/wenda/detail/516371``
+-  「译」5 种方法构建安全的 Django
+   Admin：\ ``https://zhuanlan.zhihu.com/p/28517753``
+
+使用 Json 转换时出现\ ``In order to allow non-dict objects to be serialized set the safe parameter t``
+======================================================================================================
+
+.. code:: python
+
+    from django.http import JsonResponse
+
+
+    class Publishs(APIView):
+        """发布者"""
+        def get(self, request, *args, **kwargs):
+            # publish = Publish.objects.all()
+            return JsonResponse('ok')       # 这一行，在后面添加一个 safe=False
+
+错误原因：转换的不是一个字典 解决办法：使用 ``JsonResponse``
+时，如果不是字典类型，需要添加 ``safe=False``
